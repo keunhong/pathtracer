@@ -11,4 +11,26 @@
 Material::Material(){
     std::cout << "Default constructor for material called. This will do NOTHING." << std::endl;
 }
-Material::Material(const Vec3& c, double rd, double rr, double rt, double n_): color(c), rho_d(rd), rho_r(rr), rho_t(rt), n(n_){}
+Material::Material(Color e, Color c, double n_): exitance(e), color(c), n(n_){}
+
+/*
+ * Rejection sampling of hemisphere oriented to normal n
+ */
+Vec3 Material::sample_hemisphere(Vec3 n) const{
+    // Uniformly sample cube and reject if not in radius of sphere
+    Vec3 random_dir;
+    do{
+        random_dir = Vec3(drand48()*2.0 - 1.0, drand48()*2.0 - 1.0, drand48()*2.0 - 1.0);
+    }while(random_dir*random_dir > 1.0);
+    
+    random_dir.normalize();
+    
+    // Flip if point is on the wrong hemisphere
+    if(random_dir*n < 0) random_dir = -random_dir;
+    
+    return random_dir;
+}
+
+Vec3 Material::brdf_direction(Vec3 n) const{
+    return sample_hemisphere(n);
+}

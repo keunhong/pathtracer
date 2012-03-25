@@ -9,15 +9,19 @@
 #ifndef pathtracer_camera_hpp
 #define pathtracer_camera_hpp
 
+#include <iostream>
 #include "vec3.hpp"
 
+using std::cout;
+using std::endl;
+
 struct Camera{
-    Vec3 m_optical_center;
-    Vec3 m_focal_point;
-    Vec3 m_lookat;
-    double m_fovx;
-    double m_fovy;
-    double m_focal_length;
+    Vec3 optical_center;
+    Vec3 focal_point;
+    Vec3 lookat;
+    double fovx;
+    double fovy;
+    double focal_length;
     
     Camera(Vec3 pos, Vec3 lookat, double fovx, double width, double height);
 };

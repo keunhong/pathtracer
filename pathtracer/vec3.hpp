@@ -9,11 +9,16 @@ class Vec3{
     double x, y, z;
     Vec3();
     Vec3(double x_, double y_, double z_);
+    Vec3(double xyz);
     Vec3& normalize();
+    Vec3 norm();
     Vec3 cross(const Vec3& v) const;
     double dot(const Vec3& r) const;
-    double operator*(const Vec3& r) const;
     double length() const;
+    
+    double operator*(const Vec3& r) const;
+    
+    // Scalar operators
     Vec3 operator*(double s) const;
     Vec3 operator+(double s) const;
     Vec3 operator-(double s) const;
@@ -21,6 +26,12 @@ class Vec3{
     friend Vec3 operator*(double s, const Vec3 &v);
     friend Vec3 operator+(double s, const Vec3 &v);
     friend Vec3 operator-(double s, const Vec3 &v);
+    Vec3& operator+=(const double& c);
+    Vec3& operator-=(const double& c);
+    Vec3& operator*=(const double& c);
+    Vec3& operator/=(const double& c);
+    
+    // Vector operators
     Vec3 operator+(const Vec3& r) const;
     Vec3 operator-(const Vec3& r) const;
     Vec3 operator-() const;

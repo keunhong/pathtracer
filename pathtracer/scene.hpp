@@ -10,15 +10,23 @@
 #define pathtracer_scene_hpp
 
 #include <vector>
-#include "definitions.hpp"
+#include "util.hpp"
 #include "primitive.hpp"
 
+using std::vector;
+
 class Scene{
-    std::vector<Primitive*> primitives;
+    vector<Primitive*> primitives;
+    vector<Primitive*> luminaires;
     
 public:
+    Scene();
+    ~Scene();
     void add_primitive(Primitive *p);
     bool nearest_primitive(const Ray &ray, double &t, Primitive *&obj);
+    Vec3 sample_hemisphere(Vec3 p) const;
+    Color radiance(const Ray &ray, int depth);
+
 };
 
 #endif

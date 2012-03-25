@@ -12,11 +12,21 @@ int Primitive::counter = 0;
 
 Primitive::Primitive(){
     key = ++counter;
-    m_exitance = Vec3(0,0,0);
 }
 
 Primitive::Primitive(Material *m){
     key = ++counter;
-    m_exitance = Vec3(0,0,0);
     m_material = m;
+}
+
+Color Primitive::get_color(void) const{
+    return m_material->color;
+}
+
+const Material *Primitive::get_mat(void) const{
+    return m_material;
+}
+
+Color Primitive::get_exitance(void) const{
+    return m_material->exitance;
 }

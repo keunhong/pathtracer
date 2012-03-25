@@ -9,19 +9,21 @@
 #ifndef pathtracer_material_hpp
 #define pathtracer_material_hpp
 
+#include "color.hpp"
 #include "vec3.hpp"
+#include "ray.hpp"
 
 class Material{
-private:
-    Vec3 color;
-    double rho_d;
-    double rho_r;
-    double rho_t;
-    double n;
-    
 public:
+    Color color;
+    double n;
+    Color exitance;
+    
     Material();
-    Material(const Vec3 &c, double rd, double rr, double rt, double n);
+    Material(Color e, Color c, double n);
+    
+    Vec3 sample_hemisphere(Vec3 n) const;
+    virtual Vec3 brdf_direction(Vec3 n) const;
 };
 
 #endif

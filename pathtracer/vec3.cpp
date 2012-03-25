@@ -2,6 +2,7 @@
 
 Vec3::Vec3() : x(0), y(0), z(0){}
 Vec3::Vec3(double x_, double y_, double z_) : x(x_), y(y_), z(z_){}
+Vec3::Vec3(double xyz) : x(xyz), y(xyz), z(xyz){}
 
 Vec3& Vec3::normalize(){
     double length = sqrt(x*x+y*y+z*z);
@@ -10,6 +11,11 @@ Vec3& Vec3::normalize(){
     z /= length;
 
     return *this;
+}
+
+Vec3 Vec3::norm(){
+    double length = sqrt(x*x+y*y+z*z);
+    return Vec3(x/length, y/length, z/length);
 }
 
 double Vec3::length() const{
@@ -49,6 +55,31 @@ Vec3 Vec3::operator-(double s) const{
 
 Vec3 Vec3::operator/(double s) const{
     return Vec3(x/s, y/s, z/s);
+}
+
+Vec3& Vec3::operator+=(const double& c){
+    x += c;
+    y += c;
+    z += c;
+    return *this;
+}
+Vec3& Vec3::operator-=(const double& c){
+    x /= c;
+    y /= c;
+    z /= c;
+    return *this;
+}
+Vec3& Vec3::operator*=(const double& c){
+    x /= c;
+    y /= c;
+    z /= c;
+    return *this;
+}
+Vec3& Vec3::operator/=(const double& c){
+    x /= c;
+    y /= c;
+    z /= c;
+    return *this;
 }
 
 
@@ -96,7 +127,7 @@ Vec3& Vec3::operator/=(const Vec3& c){
 
 
 std::ostream& operator<<(std::ostream& os, const Vec3& v){
-    os << "(" <<  v.x << ", " << v.y <<", " << v.z << ")";
+    os << "Vec3(" <<  v.x << ", " << v.y <<", " << v.z << ")";
     return os;
 }
 
