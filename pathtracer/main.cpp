@@ -12,6 +12,8 @@
 #include <fstream>
 #include <ctime>
 
+#include <pthread.h>
+
 #include "vec3.hpp"
 #include "ray.hpp"
 #include "primitive.hpp"
@@ -36,7 +38,7 @@ int main (int argc, const char * argv[])
     
     int width = 640;
     int height = 480;
-    int num_passes = 10;
+    int num_passes = 100;
     
     cout << "Initializing environment" << endl;
     
@@ -52,9 +54,14 @@ int main (int argc, const char * argv[])
     Scene scene;
     //scene.add_primitive( new Parallelogram(Vec3(-320,520,500), Vec3(0,0,-1000), Vec3(640,0,0), &mats[5]) ); // ceiling
     
-    scene.add_primitive( new Sphere(Vec3(-300,-420,-400), 100, &mats[4]) );
-    scene.add_primitive( new Sphere(Vec3(0,-420,-400), 100, &mats[3]) );
-    scene.add_primitive( new Sphere(Vec3(300,-420,-400), 100, &mats[4]) );
+    // Spheres
+    scene.add_primitive( new Sphere(Vec3(-400,-420,-500), 100, &mats[4]) );
+    scene.add_primitive( new Sphere(Vec3(-200,-420,-430), 100, &mats[3]) );
+    scene.add_primitive( new Sphere(Vec3(0,-420,-500), 100, &mats[4]) );
+    scene.add_primitive( new Sphere(Vec3(200,-420,-430), 100, &mats[2]) );
+    scene.add_primitive( new Sphere(Vec3(400,-420,-500), 100, &mats[4]) );
+    
+    // Walls
     scene.add_primitive( new Plane(Vec3(-1,0,0), Vec3(520,0,0), &mats[1]) ); // right wall
     scene.add_primitive( new Plane(Vec3(1,0,0), Vec3(-520,0,0), &mats[2]) ); // left wall
     scene.add_primitive( new Plane(Vec3(0,-1,0), Vec3(0,520,0), &mats[5]) ); // ceiling
@@ -65,22 +72,31 @@ int main (int argc, const char * argv[])
     Camera cam(Vec3(0,0,500), Vec3(0,0,-1), M_PI/2, width, height);
     
     double image[width][height][3];
+    
+    pthread_mutex_t pass_mutex = PTHREAD_MUTEX_INITIALIZER;
+    
+    int pass_count = 1;
         
     // Trace scene
     cout << "Tracing scene" << endl;
+    #pragma omp parallel for
     for(int pass = 1; pass <= num_passes; pass++){
+        pthread_mutex_lock(&pass_mutex);
+        cout << "Pass " << pass_count << " of " << num_passes << endl;
+        pass_count++;
+        pthread_mutex_unlock(&pass_mutex);
+        
         // Display progress
-        cout << "Pass " << pass << " of " << num_passes << endl;
         for(int x = 0; x < width; x++){
             // Trace scene
             for(int y = 0; y < height; y++){
                 double u = (double)x - width/2.0;
                 double v = (double)y - height/2.0;
                 
-                static const int num_samples = 1;
+                static const int num_samples = 4;
                 for(int i = 0; i < num_samples; i++){
-                    double xs = 0;
-                    double ys = 0;
+                    double xs = drand48();
+                    double ys = drand48();
                     Vec3 image_point(cam.optical_center.x+u+xs
                                     ,cam.optical_center.y+v+ys
                                     ,cam.optical_center.z);
